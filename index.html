@@ -379,7 +379,7 @@
 	  document.getElementById("gameContainer").style.display = "flex";
 	  document.body.classList.remove("stop-scroll");
 	
-	  bgm.volume = 1;
+	  bgm.volume = 0.6;
 	  bgm.muted = false;
 	  bgm.play()
 	    .then(() => console.log("✅ BGM 播放成功"))
@@ -457,6 +457,7 @@
 
 
     function cancelChoice() {
+	playSound(clickSound);
       popup.style.display = 'none';
     }
 
@@ -482,6 +483,7 @@
     }
 
 	finishBtn.addEventListener("click", () => {
+		playSound(clickSound);
 		playSound(finishSound);
 		popupContent.style.display = 'none';
 		popupMessage.style.display = 'block';
