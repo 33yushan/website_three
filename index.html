@@ -375,9 +375,13 @@
 	function startGame() {
 	  document.getElementById("startScreen").style.display = "none";
 	  document.getElementById("gameContainer").style.display = "flex";
-	  document.body.classList.remove("stop-scroll"); // 解除鎖住畫面
-	  bgm.volume = 1; // 可調整音量
-	bgm.play().catch(() => {}); // 某些瀏覽器需要互動後才能播放
+	  document.body.classList.remove("stop-scroll");
+	
+	  bgm.volume = 1;
+	  bgm.muted = false;
+	  bgm.play()
+	    .then(() => console.log("✅ BGM 播放成功"))
+	    .catch((err) => console.warn("❌ BGM 播放失敗", err));
 	}
     const orientationOverlay = document.getElementById('orientationOverlay');
     const popup = document.getElementById('popup');
