@@ -361,6 +361,10 @@
   </div>
   <div id="blocker"></div>
 
+	<audio id="bgm" src="audio/bgm.mp3" loop></audio>
+	<audio id="clickSound" src="audio/click.mp3"></audio>
+	<audio id="finishSound" src="audio/finish.mp3"></audio>
+
   <script>
 	const bgm = document.getElementById("bgm");
 	const clickSound = document.getElementById("clickSound");
@@ -489,8 +493,5 @@
 		blocker.style.display = 'block'; //開啟遮罩，鎖住整個畫面
 	});
   </script>
-	<audio id="bgm" src="audio/bgm.mp3" loop></audio>
-	<audio id="clickSound" src="audio/click.mp3"></audio>
-	<audio id="finishSound" src="audio/finish.mp3"></audio>
 </body>
 </html>
