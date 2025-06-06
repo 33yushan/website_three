@@ -362,10 +362,22 @@
   <div id="blocker"></div>
 
   <script>
+	const bgm = document.getElementById("bgm");
+	const clickSound = document.getElementById("clickSound");
+	const finishSound = document.getElementById("finishSound");
+
+	function playSound(audio) {
+	  if (audio) {
+		audio.currentTime = 0;
+		audio.play().catch(() => {}); // 防止錯誤中斷
+	  }
+	}
 	function startGame() {
 	  document.getElementById("startScreen").style.display = "none";
 	  document.getElementById("gameContainer").style.display = "flex";
 	  document.body.classList.remove("stop-scroll"); // 解除鎖住畫面
+	  bgm.volume = 1; // 可調整音量
+	bgm.play().catch(() => {}); // 某些瀏覽器需要互動後才能播放
 	}
     const orientationOverlay = document.getElementById('orientationOverlay');
     const popup = document.getElementById('popup');
@@ -388,6 +400,7 @@
 	document.querySelectorAll('.food').forEach(el => {
 	  if (!el.classList.contains('placeholder')) {
 		el.addEventListener('click', () => {
+		playSound(clickSound);
 		  selectedFood = el;
 		  const name = el.querySelector('img')?.alt || '（未知）';
 		  const type = el.dataset.type;
@@ -415,6 +428,7 @@
 	  const content = slot.querySelector('.slot-content');
 
 	if (content.dataset.food) {
+	playSound(clickSound);
 	  popupName.innerText = `${type}類已經有 ${content.dataset.food} 了喵！`;
 	  popupType.innerText = `請再次點選 ${content.dataset.food} 放回去後才能重選喔！`;
 	  popupImage.src = "";
@@ -424,14 +438,15 @@
 	  popup.style.display = "flex";
 	  return;
 	}
-
-	  const img = selectedFood.querySelector('img').cloneNode(true);
-	  content.innerHTML = '';
-	  content.appendChild(img);
-	  content.dataset.food = name;
-	  selectedFood.style.visibility = "hidden";
-	  popup.style.display = 'none';
-	  checkCompletion();
+	
+	playSound(clickSound);
+	const img = selectedFood.querySelector('img').cloneNode(true);
+	content.innerHTML = '';
+	content.appendChild(img);
+	content.dataset.food = name;
+	selectedFood.style.visibility = "hidden";
+	popup.style.display = 'none';
+	checkCompletion();
 	}
 
 
@@ -443,6 +458,8 @@
       content.addEventListener('click', () => {
         const foodName = content.dataset.food;
         if (!foodName) return;
+		
+		playSound(clickSound);
 
         const food = [...document.querySelectorAll('.food')].find(f => f.querySelector('img')?.alt === foodName);
         if (food) food.style.visibility = "visible";
@@ -459,13 +476,17 @@
     }
 
 	finishBtn.addEventListener("click", () => {
-	  popupContent.style.display = 'none';
-	  popupMessage.style.display = 'block';
-	  popupButtons.style.display = 'none';
-	  popupMessage.innerText = "太厲害了喵～你幫阿鳳搭配了一個營養超均衡的晚餐！\n可以回去繼續閱讀繪本啦喵～";
-	  popup.style.display = 'flex';
-	  blocker.style.display = 'block'; //開啟遮罩，鎖住整個畫面
+		playSound(finishSound);
+		popupContent.style.display = 'none';
+		popupMessage.style.display = 'block';
+		popupButtons.style.display = 'none';
+		popupMessage.innerText = "太厲害了喵～你幫阿鳳搭配了一個營養超均衡的晚餐！\n可以回去繼續閱讀繪本啦喵～";
+		popup.style.display = 'flex';
+		blocker.style.display = 'block'; //開啟遮罩，鎖住整個畫面
 	});
   </script>
+	<audio id="bgm" src="audio/bgm.mp3" loop></audio>
+	<audio id="clickSound" src="audio/click.mp3"></audio>
+	<audio id="finishSound" src="audio/finish.mp3"></audio>
 </body>
 </html>
