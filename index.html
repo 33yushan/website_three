@@ -293,6 +293,9 @@
   </style>
 </head>
 <body class="stop-scroll">
+	<audio id="bgm" src="audio/bgm.mp3" loop></audio>
+	<audio id="clickSound" src="audio/click.mp3"></audio>
+	<audio id="finishSound" src="audio/finish.mp3"></audio>
 	<div id="orientationOverlay">
 		<div class="phone-icon"></div>
 		<div>請將手機直立以繼續遊戲</div>
@@ -360,11 +363,6 @@
     </div>
   </div>
   <div id="blocker"></div>
-
-	<audio id="bgm" src="audio/bgm.mp3" loop></audio>
-	<audio id="clickSound" src="audio/click.mp3"></audio>
-	<audio id="finishSound" src="audio/finish.mp3"></audio>
-
   <script>
 	const bgm = document.getElementById("bgm");
 	const clickSound = document.getElementById("clickSound");
