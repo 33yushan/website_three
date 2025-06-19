@@ -345,6 +345,11 @@
       </div>
     </div>
 	<div id="popupMessage" style="display: none;"></div>
+	<div id="popupSummary" style="display: none;">
+	  <div id="summaryList" style="text-align: left; margin-bottom: 1rem;"></div>
+	  <button id="showCommentBtn">看評語</button>
+	  <div id="evaluationComment" style="margin-top: 1rem; font-weight: bold;"></div>
+	</div>
     <div id="popupButtons">
       <button id="confirmBtn" onclick="confirmChoice()">選這個</button>
       <button onclick="cancelChoice()">放回去</button>
@@ -484,14 +489,80 @@
 	}
 
 	finishBtn.addEventListener("click", () => {
-		playSound(finishSound);
-		popupContent.style.display = 'none';
-		popupMessage.style.display = 'block';
-		popupButtons.style.display = 'none';
-		popupMessage.innerText = "太厲害了喵～你幫阿鳳搭配了一個營養超均衡的晚餐！\n可以回去繼續閱讀繪本啦喵～";
-		popup.style.display = 'flex';
-		blocker.style.display = 'block'; //開啟遮罩，鎖住整個畫面
+	  playSound(finishSound);
+
+	  const categoryCount = {
+		水果: 0,
+		蔬菜: 0,
+		全榖雜糧: 0,
+		蛋豆魚肉: 0,
+		乳品: 0,
+		油脂與堅果種子: 0
+	  };
+
+	  // 統計每一類被選了幾個
+	  document.querySelectorAll('.slot-content').forEach(content => {
+		const foodName = content.dataset.food;
+		if (!foodName) return;
+
+		const matched = [...document.querySelectorAll('.food')].find(f =>
+		  f.querySelector('img')?.alt === foodName
+		);
+		if (matched) {
+		  const type = matched.dataset.type;
+		  if (categoryCount[type] !== undefined) {
+			categoryCount[type]++;
+		  }
+		}
+	  });
+
+	  // 顯示彈窗
+	  document.getElementById("popupContent").style.display = "none";
+	  document.getElementById("popupMessage").style.display = "none";
+	  document.getElementById("popupButtons").style.display = "none";
+	  document.getElementById("popupSummary").style.display = "block";
+
+	  const summaryList = document.getElementById("summaryList");
+	  summaryList.innerHTML = Object.entries(categoryCount)
+		.map(([key, val]) => `<div>${key}：${val} 項</div>`)
+		.join('');
+
+	  // 清空評語
+	  document.getElementById("evaluationComment").innerText = '';
+	  document.getElementById("popup").style.display = "flex";
+	  blocker.style.display = "block";
 	});
+
+	document.getElementById("showCommentBtn").addEventListener("click", () => {
+	  const counts = {};
+	  document.querySelectorAll('.slot-content').forEach(content => {
+		const foodName = content.dataset.food;
+		if (!foodName) return;
+
+		const matched = [...document.querySelectorAll('.food')].find(f =>
+		  f.querySelector('img')?.alt === foodName
+		);
+		if (matched) {
+		  const type = matched.dataset.type;
+		  if (!counts[type]) counts[type] = 0;
+		  counts[type]++;
+		}
+	  });
+
+	  const commentBox = document.getElementById("evaluationComment");
+	  const isPerfect =
+		counts["蔬菜"] === 2 &&
+		counts["蛋豆魚肉"] === 2 &&
+		counts["水果"] === 1 &&
+		counts["全榖雜糧"] === 1 &&
+		counts["乳品"] === 1 &&
+		counts["油脂與堅果種子"] === 1;
+
+	  commentBox.innerText = isPerfect
+		? "太棒了喵～搭配得超級完美，讓阿鳳健康100分！"
+		: "可以再改進喵～細節就在醫生給的紙條裡！";
+	});
+
   </script>
 	<audio id="bgm" src="audio/bgm.mp3" loop></audio>
 	<audio id="clickSound" src="audio/click.mp3"></audio>
