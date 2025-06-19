@@ -91,9 +91,9 @@
 	  background: #fff;
 	  padding: 1rem;
 	  display: grid;
-	  grid-template-columns: repeat(4, 1fr); /* 四欄 */
-	  grid-template-rows: repeat(2, 1fr);    /* 兩列 */
+	  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
 	  gap: 0.5rem;
+	  box-sizing: border-box;
 	}
 
     .slot {
