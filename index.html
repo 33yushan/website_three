@@ -374,214 +374,212 @@
     </div>
   </div>
   <div id="blocker"></div>
+  
+	<script>
+	window.addEventListener('DOMContentLoaded', () => {
+	  const bgm = document.getElementById("bgm");
+	  const clickSound = document.getElementById("clickSound");
+	  const finishSound = document.getElementById("finishSound");
 
-  <script>
-	const bgm = document.getElementById("bgm");
-	const clickSound = document.getElementById("clickSound");
-	const finishSound = document.getElementById("finishSound");
-
-	function playSound(audio) {
-	  if (audio) {
-		audio.currentTime = 0;
-		audio.play().catch(() => {}); // 防止錯誤中斷
-	  }
-	}
-	function startGame() {
-	  document.getElementById("startScreen").style.display = "none";
-	  document.getElementById("gameContainer").style.display = "flex";
-	  document.body.classList.remove("stop-scroll"); // 解除鎖住畫面
-	  bgm.volume = 1; // 可調整音量
-	bgm.play().catch(() => {}); // 某些瀏覽器需要互動後才能播放
-	}
-    const orientationOverlay = document.getElementById('orientationOverlay');
-    const popup = document.getElementById('popup');
-    const popupName = document.getElementById('popupName');
-    const popupType = document.getElementById('popupType');
-    const popupImage = document.getElementById('popupImage');
-    const confirmBtn = document.getElementById('confirmBtn');
-    const popupButtons = document.getElementById('popupButtons');
-    const finishBtn = document.getElementById('finishBtn');
-    let selectedFood = null;
-
-    function checkOrientation() {
-      orientationOverlay.style.display = (window.innerWidth > window.innerHeight) ? 'flex' : 'none';
-    }
-
-    window.addEventListener('resize', checkOrientation);
-    window.addEventListener('orientationchange', checkOrientation);
-    window.addEventListener('load', checkOrientation);
-	
-	document.querySelectorAll('.food').forEach(el => {
-	  if (!el.classList.contains('placeholder')) {
-		el.addEventListener('click', () => {
-		  playSound(clickSound);
-		  selectedFood = el;
-		  const name = el.querySelector('img')?.alt || '（未知）';
-		  const type = el.dataset.type;
-
-		  const slotContents = [...document.querySelectorAll('.slot-content')];
-		  const isFull = slotContents.filter(el => el.dataset.food).length >= 8;
-
-		  const popupContent = document.getElementById("popupContent");
-		  const popupMessage = document.getElementById("popupMessage");
-		  const popupButtons = document.getElementById("popupButtons");
-
-		  if (isFull) {
-			// ➤ 如果滿格，顯示提示 popup，只保留放回按鈕
-			popupContent.style.display = 'none';
-			popupMessage.style.display = 'block';
-			popupButtons.style.display = 'flex';
-			document.getElementById("popupRight").style.display = "none";
-			popupMessage.innerText = "你已經選了 8 種食材了喵～\n請再點選一次食材放回去後才能選新的！";
-			confirmBtn.style.display = "none";
-			popup.style.display = 'flex';
-			return;
-		  }
-
-		  // ➤ 若沒滿格，正常流程
-		  popupContent.style.display = 'flex';
-		  popupMessage.style.display = 'none';
-		  popupButtons.style.display = 'flex';
-		  document.getElementById("popupRight").style.display = "flex";
-
-		  popupName.innerText = name;
-		  popupType.innerText = `${type}類`;
-		  popupImage.src = el.querySelector('img').src;
-		  popupImage.alt = name;
-		  confirmBtn.style.display = "inline-block";
-		  popup.style.display = 'flex';
-		});
-	  }
-	});
-	
-	function confirmChoice() {
-	  if (!selectedFood) return;
-
-	  const name = selectedFood.querySelector('img').alt;
-
-	  // 找到第一個空的 slot
-	  const emptySlot = [...document.querySelectorAll('.slot')].find(slot =>
-		!slot.querySelector('.slot-content').dataset.food
-	  );
-
-	  if (!emptySlot) {
-		alert("已經選滿 8 個食材！");
-		return;
+	  function playSound(audio) {
+		if (audio) {
+		  audio.currentTime = 0;
+		  audio.play().catch(() => {});
+		}
 	  }
 
-	  playSound(clickSound);
-	  const img = selectedFood.querySelector('img').cloneNode(true);
-	  const content = emptySlot.querySelector('.slot-content');
-	  content.innerHTML = '';
-	  content.appendChild(img);
-	  content.dataset.food = name;
-	  selectedFood.style.visibility = "hidden";
-	  popup.style.display = 'none';
-	  checkCompletion();
-	}
-
-    function cancelChoice() {
-      popup.style.display = 'none';
-    }
-
-    document.querySelectorAll('.slot-content').forEach(content => {
-      content.addEventListener('click', () => {
-        const foodName = content.dataset.food;
-        if (!foodName) return;
-		
-		playSound(clickSound);
-
-        const food = [...document.querySelectorAll('.food')].find(f => f.querySelector('img')?.alt === foodName);
-        if (food) food.style.visibility = "visible";
-
-        content.innerHTML = "";
-        content.dataset.food = "";
-        checkCompletion();
-      });
-    });
-
-    function checkCompletion() {
-	  const filledCount = [...document.querySelectorAll('.slot-content')]
-		.filter(el => el.dataset.food).length;
-	  finishBtn.style.display = filledCount === 8 ? "block" : "none";
-	}
-
-	finishBtn.addEventListener("click", () => {
-	  playSound(finishSound);
-
-	  const categoryCount = {
-		水果: 0,
-		蔬菜: 0,
-		全榖雜糧: 0,
-		豆魚蛋肉: 0,
-		乳品: 0,
-		油脂與堅果種子: 0
+	  window.startGame = function () {
+		document.getElementById("startScreen").style.display = "none";
+		document.getElementById("gameContainer").style.display = "flex";
+		document.body.classList.remove("stop-scroll");
+		bgm.volume = 1;
+		bgm.play().catch(() => {});
 	  };
 
-	  // 統計每一類被選了幾個
-	  document.querySelectorAll('.slot-content').forEach(content => {
-		const foodName = content.dataset.food;
-		if (!foodName) return;
+	  const orientationOverlay = document.getElementById('orientationOverlay');
+	  const popup = document.getElementById('popup');
+	  const popupName = document.getElementById('popupName');
+	  const popupType = document.getElementById('popupType');
+	  const popupImage = document.getElementById('popupImage');
+	  const confirmBtn = document.getElementById('confirmBtn');
+	  const popupButtons = document.getElementById('popupButtons');
+	  const finishBtn = document.getElementById('finishBtn');
+	  let selectedFood = null;
 
-		const matched = [...document.querySelectorAll('.food')].find(f =>
-		  f.querySelector('img')?.alt === foodName
+	  function checkOrientation() {
+		orientationOverlay.style.display = (window.innerWidth > window.innerHeight) ? 'flex' : 'none';
+	  }
+
+	  window.addEventListener('resize', checkOrientation);
+	  window.addEventListener('orientationchange', checkOrientation);
+	  window.addEventListener('load', checkOrientation);
+
+	  document.querySelectorAll('.food').forEach(el => {
+		if (!el.classList.contains('placeholder')) {
+		  el.addEventListener('click', () => {
+			playSound(clickSound);
+			selectedFood = el;
+			const name = el.querySelector('img')?.alt || '（未知）';
+			const type = el.dataset.type;
+
+			const slotContents = [...document.querySelectorAll('.slot-content')];
+			const isFull = slotContents.filter(el => el.dataset.food).length >= 8;
+
+			const popupContent = document.getElementById("popupContent");
+			const popupMessage = document.getElementById("popupMessage");
+
+			if (isFull) {
+			  popupContent.style.display = 'none';
+			  popupMessage.style.display = 'block';
+			  popupButtons.style.display = 'flex';
+			  document.getElementById("popupRight").style.display = "none";
+			  popupMessage.innerText = "你已經選了 8 種食材了喵～\n請再點選一次食材放回去後才能選新的！";
+			  confirmBtn.style.display = "none";
+			  popup.style.display = 'flex';
+			  return;
+			}
+
+			popupContent.style.display = 'flex';
+			popupMessage.style.display = 'none';
+			popupButtons.style.display = 'flex';
+			document.getElementById("popupRight").style.display = "flex";
+
+			popupName.innerText = name;
+			popupType.innerText = `${type}類`;
+			popupImage.src = el.querySelector('img').src;
+			popupImage.alt = name;
+			confirmBtn.style.display = "inline-block";
+			popup.style.display = 'flex';
+		  });
+		}
+	  });
+
+	  function confirmChoice() {
+		if (!selectedFood) return;
+
+		const name = selectedFood.querySelector('img').alt;
+		const emptySlot = [...document.querySelectorAll('.slot')].find(slot =>
+		  !slot.querySelector('.slot-content').dataset.food
 		);
-		if (matched) {
-		  const type = matched.dataset.type;
-		  if (categoryCount[type] !== undefined) {
-			categoryCount[type]++;
+
+		if (!emptySlot) {
+		  alert("已經選滿 8 個食材！");
+		  return;
+		}
+
+		playSound(clickSound);
+		const img = selectedFood.querySelector('img').cloneNode(true);
+		const content = emptySlot.querySelector('.slot-content');
+		content.innerHTML = '';
+		content.appendChild(img);
+		content.dataset.food = name;
+		selectedFood.style.visibility = "hidden";
+		popup.style.display = 'none';
+		checkCompletion();
+	  }
+
+	  function cancelChoice() {
+		popup.style.display = 'none';
+	  }
+
+	  document.querySelectorAll('.slot-content').forEach(content => {
+		content.addEventListener('click', () => {
+		  const foodName = content.dataset.food;
+		  if (!foodName) return;
+
+		  playSound(clickSound);
+
+		  const food = [...document.querySelectorAll('.food')].find(f =>
+			f.querySelector('img')?.alt === foodName
+		  );
+		  if (food) food.style.visibility = "visible";
+
+		  content.innerHTML = "";
+		  content.dataset.food = "";
+		  checkCompletion();
+		});
+	  });
+
+	  function checkCompletion() {
+		const filledCount = [...document.querySelectorAll('.slot-content')]
+		  .filter(el => el.dataset.food).length;
+		finishBtn.style.display = filledCount === 8 ? "block" : "none";
+	  }
+
+	  finishBtn.addEventListener("click", () => {
+		playSound(finishSound);
+
+		const categoryCount = {
+		  水果: 0,
+		  蔬菜: 0,
+		  全榖雜糧: 0,
+		  蛋豆魚肉: 0,
+		  乳品: 0,
+		  油脂與堅果種子: 0
+		};
+
+		document.querySelectorAll('.slot-content').forEach(content => {
+		  const foodName = content.dataset.food;
+		  if (!foodName) return;
+
+		  const matched = [...document.querySelectorAll('.food')].find(f =>
+			f.querySelector('img')?.alt === foodName
+		  );
+		  if (matched) {
+			const type = matched.dataset.type;
+			if (categoryCount[type] !== undefined) {
+			  categoryCount[type]++;
+			}
 		  }
-		}
+		});
+
+		document.getElementById("popupContent").style.display = "none";
+		document.getElementById("popupMessage").style.display = "none";
+		document.getElementById("popupButtons").style.display = "none";
+		document.getElementById("popupSummary").style.display = "block";
+
+		const summaryList = document.getElementById("summaryList");
+		summaryList.innerHTML = Object.entries(categoryCount)
+		  .map(([key, val]) => `<div>${key}：${val} 樣</div>`)
+		  .join('');
+
+		document.getElementById("evaluationComment").innerText = '';
+		document.getElementById("popup").style.display = "flex";
+		document.getElementById("blocker").style.display = "block";
 	  });
 
-	  // 顯示彈窗
-	  document.getElementById("popupContent").style.display = "none";
-	  document.getElementById("popupMessage").style.display = "none";
-	  document.getElementById("popupButtons").style.display = "none";
-	  document.getElementById("popupSummary").style.display = "block";
+	  document.getElementById("showCommentBtn").addEventListener("click", () => {
+		const counts = {};
+		document.querySelectorAll('.slot-content').forEach(content => {
+		  const foodName = content.dataset.food;
+		  if (!foodName) return;
 
-	  const summaryList = document.getElementById("summaryList");
-	  summaryList.innerHTML = Object.entries(categoryCount)
-		.map(([key, val]) => `<div>${key}：${val} 樣</div>`)
-		.join('');
+		  const matched = [...document.querySelectorAll('.food')].find(f =>
+			f.querySelector('img')?.alt === foodName
+		  );
+		  if (matched) {
+			const type = matched.dataset.type;
+			if (!counts[type]) counts[type] = 0;
+			counts[type]++;
+		  }
+		});
 
-	  // 清空評語
-	  document.getElementById("evaluationComment").innerText = '';
-	  document.getElementById("popup").style.display = "flex";
-	  blocker.style.display = "block";
-	});
+		const commentBox = document.getElementById("evaluationComment");
+		const isPerfect =
+		  counts["蔬菜"] === 2 &&
+		  counts["蛋豆魚肉"] === 2 &&
+		  counts["水果"] === 1 &&
+		  counts["全榖雜糧"] === 1 &&
+		  counts["乳品"] === 1 &&
+		  counts["油脂與堅果種子"] === 1;
 
-	document.getElementById("showCommentBtn").addEventListener("click", () => {
-	  const counts = {};
-	  document.querySelectorAll('.slot-content').forEach(content => {
-		const foodName = content.dataset.food;
-		if (!foodName) return;
-
-		const matched = [...document.querySelectorAll('.food')].find(f =>
-		  f.querySelector('img')?.alt === foodName
-		);
-		if (matched) {
-		  const type = matched.dataset.type;
-		  if (!counts[type]) counts[type] = 0;
-		  counts[type]++;
-		}
+		commentBox.innerText = isPerfect
+		  ? "太棒了喵～搭配得超級完美，讓阿鳳健康100分！\n可以回去閱讀繪本了喵"
+		  : "可以再更好喵～細節就在醫生給的紙條裡！也可以刷新頁面再試一次喵\n";
 	  });
-
-	  const commentBox = document.getElementById("evaluationComment");
-	  const isPerfect =
-		counts["蔬菜"] === 2 &&
-		counts["豆魚蛋肉"] === 2 &&
-		counts["水果"] === 1 &&
-		counts["全榖雜糧"] === 1 &&
-		counts["乳品"] === 1 &&
-		counts["油脂與堅果種子"] === 1;
-
-	  commentBox.innerText = isPerfect
-		? "太棒了喵～搭配得超級完美，讓阿鳳健康100分！\n可以回去閱讀繪本了喵"
-		: "可以再更好喵～細節就在醫生給的紙條裡！也可以刷新頁面再試一次喵\n";
 	});
-
-  </script>
+	</script>
+	
 	<audio id="bgm" src="audio/bgm.mp3" loop></audio>
 	<audio id="clickSound" src="audio/click.mp3"></audio>
 	<audio id="finishSound" src="audio/finish.mp3"></audio>
