@@ -88,44 +88,31 @@
     }
 
     #selection {
-      background: #fff;
-      padding: 1rem;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 0.5rem;
-    }
-
-    .slot-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+	  background: #fff;
+	  padding: 1rem;
+	  display: grid;
+	  grid-template-columns: repeat(4, 1fr); /* 四欄 */
+	  grid-template-rows: repeat(2, 1fr);    /* 兩列 */
+	  gap: 0.5rem;
+	}
 
     .slot {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border: 2px dashed #aaa;
-      border-radius: 6px;
-      background: #f2f2f2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-    }
+	  width: 100%;
+	  aspect-ratio: 1 / 1;
+	  border: 2px dashed #aaa;
+	  border-radius: 6px;
+	  background: #f2f2f2;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	  cursor: pointer;
+	}
 
     .slot-content {
       font-size: 1.2rem;
       color: #000;
       text-align: center;
       padding: 0.25rem;
-    }
-
-    .slot-label {
-      margin-top: 0.3rem;
-      font-size: 1.1rem;
-      color: #666;
-      text-align: center;
     }
 
     #popup {
@@ -293,9 +280,6 @@
   </style>
 </head>
 <body class="stop-scroll">
-	<audio id="bgm" src="audio/bgm.mp3" loop></audio>
-	<audio id="clickSound" src="audio/click.mp3"></audio>
-	<audio id="finishSound" src="audio/finish.mp3"></audio>
 	<div id="orientationOverlay">
 		<div class="phone-icon"></div>
 		<div>請將手機直立以繼續遊戲</div>
@@ -335,12 +319,14 @@
 		</div>
 
 		<div id="selection">
-		  <div class="slot-wrapper"><div class="slot" data-type="水果"><div class="slot-content"></div></div><div class="slot-label">水果</div></div>
-		  <div class="slot-wrapper"><div class="slot" data-type="蔬菜"><div class="slot-content"></div></div><div class="slot-label">蔬菜</div></div>
-		  <div class="slot-wrapper"><div class="slot" data-type="全榖雜糧"><div class="slot-content"></div></div><div class="slot-label">全榖雜糧</div></div>
-		  <div class="slot-wrapper"><div class="slot" data-type="蛋豆魚肉"><div class="slot-content"></div></div><div class="slot-label">蛋豆魚肉</div></div>
-		  <div class="slot-wrapper"><div class="slot" data-type="乳品"><div class="slot-content"></div></div><div class="slot-label">乳品</div></div>
-		  <div class="slot-wrapper"><div class="slot" data-type="油脂與堅果種子"><div class="slot-content"></div></div><div class="slot-label">油脂與堅果種子</div></div>
+		  <div class="slot"><div class="slot-content"></div></div>
+		  <div class="slot"><div class="slot-content"></div></div>
+		  <div class="slot"><div class="slot-content"></div></div>
+		  <div class="slot"><div class="slot-content"></div></div>
+		  <div class="slot"><div class="slot-content"></div></div>
+		  <div class="slot"><div class="slot-content"></div></div>
+		  <div class="slot"><div class="slot-content"></div></div>
+		  <div class="slot"><div class="slot-content"></div></div>
 		</div>
 
 		<button id="finishBtn">晚餐就吃這些吧！</button>
@@ -363,6 +349,7 @@
     </div>
   </div>
   <div id="blocker"></div>
+
   <script>
 	const bgm = document.getElementById("bgm");
 	const clickSound = document.getElementById("clickSound");
@@ -377,13 +364,9 @@
 	function startGame() {
 	  document.getElementById("startScreen").style.display = "none";
 	  document.getElementById("gameContainer").style.display = "flex";
-	  document.body.classList.remove("stop-scroll");
-	
-	  bgm.volume = 0.6;
-	  bgm.muted = false;
-	  bgm.play()
-	    .then(() => console.log("✅ BGM 播放成功"))
-	    .catch((err) => console.warn("❌ BGM 播放失敗", err));
+	  document.body.classList.remove("stop-scroll"); // 解除鎖住畫面
+	  bgm.volume = 1; // 可調整音量
+	bgm.play().catch(() => {}); // 某些瀏覽器需要互動後才能播放
 	}
     const orientationOverlay = document.getElementById('orientationOverlay');
     const popup = document.getElementById('popup');
@@ -428,36 +411,31 @@
 	
 	function confirmChoice() {
 	  if (!selectedFood) return;
-	  const type = selectedFood.dataset.type;
+
 	  const name = selectedFood.querySelector('img').alt;
-	  const slot = document.querySelector(`.slot[data-type="${type}"]`);
-	  const content = slot.querySelector('.slot-content');
 
-	if (content.dataset.food) {
-	playSound(clickSound);
-	  popupName.innerText = `${type}類已經有 ${content.dataset.food} 了喵！`;
-	  popupType.innerText = `請再次點選 ${content.dataset.food} 放回去後才能重選喔！`;
-	  popupImage.src = "";
-	  document.getElementById("popupRight").style.display = "none"; // 隱藏右側圖片
-	  confirmBtn.style.display = "none"; // 不顯示「就這個」
-	  popupButtons.style.display = "flex"; // 顯示「放回去」
-	  popup.style.display = "flex";
-	  return;
-	}
-	
-	playSound(clickSound);
-	const img = selectedFood.querySelector('img').cloneNode(true);
-	content.innerHTML = '';
-	content.appendChild(img);
-	content.dataset.food = name;
-	selectedFood.style.visibility = "hidden";
-	popup.style.display = 'none';
-	checkCompletion();
-	}
+	  // 找到第一個空的 slot
+	  const emptySlot = [...document.querySelectorAll('.slot')].find(slot =>
+		!slot.querySelector('.slot-content').dataset.food
+	  );
 
+	  if (!emptySlot) {
+		alert("已經選滿 8 個食材囉！");
+		return;
+	  }
+
+	  playSound(clickSound);
+	  const img = selectedFood.querySelector('img').cloneNode(true);
+	  const content = emptySlot.querySelector('.slot-content');
+	  content.innerHTML = '';
+	  content.appendChild(img);
+	  content.dataset.food = name;
+	  selectedFood.style.visibility = "hidden";
+	  popup.style.display = 'none';
+	  checkCompletion();
+	}
 
     function cancelChoice() {
-	playSound(clickSound);
       popup.style.display = 'none';
     }
 
@@ -478,12 +456,12 @@
     });
 
     function checkCompletion() {
-      const allFilled = [...document.querySelectorAll('.slot-content')].every(el => el.dataset.food);
-      finishBtn.style.display = allFilled ? "block" : "none";
-    }
+	  const filledCount = [...document.querySelectorAll('.slot-content')]
+		.filter(el => el.dataset.food).length;
+	  finishBtn.style.display = filledCount === 8 ? "block" : "none";
+	}
 
 	finishBtn.addEventListener("click", () => {
-		playSound(clickSound);
 		playSound(finishSound);
 		popupContent.style.display = 'none';
 		popupMessage.style.display = 'block';
@@ -493,5 +471,8 @@
 		blocker.style.display = 'block'; //開啟遮罩，鎖住整個畫面
 	});
   </script>
+	<audio id="bgm" src="audio/bgm.mp3" loop></audio>
+	<audio id="clickSound" src="audio/click.mp3"></audio>
+	<audio id="finishSound" src="audio/finish.mp3"></audio>
 </body>
 </html>
