@@ -369,9 +369,9 @@
 		<div id="evaluationComment" style="margin-top: 1rem; font-weight: bold;"></div>
 	</div>
     <div id="popupButtons">
-      <button id="confirmBtn" onclick="confirmChoice()">選這個</button>
-      <button onclick="cancelChoice()">放回去</button>
-    </div>
+		<button id="confirmBtn">選這個</button>
+		<button id="cancelBtn">放回去</button>
+	</div>
   </div>
   <div id="blocker"></div>
   
@@ -395,7 +395,8 @@
 		bgm.volume = 1;
 		bgm.play().catch(() => {});
 	  };
-
+	  document.getElementById("confirmBtn").addEventListener("click", confirmChoice);
+	  document.getElementById("cancelBtn").addEventListener("click", cancelChoice);
 	  const orientationOverlay = document.getElementById('orientationOverlay');
 	  const popup = document.getElementById('popup');
 	  const popupName = document.getElementById('popupName');
