@@ -329,11 +329,11 @@
 		  <div class="food" data-type="全榖雜糧"><img src="pic/taro.png" alt="芋頭" /></div>
 		  <div class="food" data-type="全榖雜糧"><img src="pic/rice.png" alt="米" class="large" /></div>
 		  <div class="food" data-type="油脂與堅果種子"><img src="pic/vegan_butter.png" alt="植物性奶油" /></div>
-		  <div class="food" data-type="蛋豆魚肉"><img src="pic/egg.png" alt="雞蛋" class="large" /></div>
-		  <div class="food" data-type="蛋豆魚肉"><img src="pic/pork_slices.png" alt="梅花豬肉片" class="large" /></div>
+		  <div class="food" data-type="豆魚蛋肉"><img src="pic/egg.png" alt="雞蛋" class="large" /></div>
+		  <div class="food" data-type="豆魚蛋肉"><img src="pic/pork_slices.png" alt="梅花豬肉片" class="large" /></div>
 		  <div class="food" data-type="全榖雜糧"><img src="pic/sweet_potato.png" alt="地瓜" /></div>
-		  <div class="food" data-type="蛋豆魚肉"><img src="pic/beef_shoulder.png" alt="牛肩胛肉" class="large" /></div>
-		  <div class="food" data-type="蛋豆魚肉"><img src="pic/tofu.png" alt="豆腐" /></div>
+		  <div class="food" data-type="豆魚蛋肉"><img src="pic/beef_shoulder.png" alt="牛肩胛肉" class="large" /></div>
+		  <div class="food" data-type="豆魚蛋肉"><img src="pic/tofu.png" alt="豆腐" /></div>
 		  <div class="food placeholder"></div>
 		</div>
 
@@ -513,7 +513,7 @@
 		水果: 0,
 		蔬菜: 0,
 		全榖雜糧: 0,
-		蛋豆魚肉: 0,
+		豆魚蛋肉: 0,
 		乳品: 0,
 		油脂與堅果種子: 0
 	  };
@@ -542,7 +542,7 @@
 
 	  const summaryList = document.getElementById("summaryList");
 	  summaryList.innerHTML = Object.entries(categoryCount)
-		.map(([key, val]) => `<div>${key}：${val} 項</div>`)
+		.map(([key, val]) => `<div>${key}：${val} 樣</div>`)
 		.join('');
 
 	  // 清空評語
@@ -570,15 +570,15 @@
 	  const commentBox = document.getElementById("evaluationComment");
 	  const isPerfect =
 		counts["蔬菜"] === 2 &&
-		counts["蛋豆魚肉"] === 2 &&
+		counts["豆魚蛋肉"] === 2 &&
 		counts["水果"] === 1 &&
 		counts["全榖雜糧"] === 1 &&
 		counts["乳品"] === 1 &&
 		counts["油脂與堅果種子"] === 1;
 
 	  commentBox.innerText = isPerfect
-		? "太棒了喵～搭配得超級完美，讓阿鳳健康100分！"
-		: "可以再改進喵～細節就在醫生給的紙條裡！";
+		? "太棒了喵～搭配得超級完美，讓阿鳳健康100分！\n可以回去閱讀繪本了喵"
+		: "可以再更好喵～細節就在醫生給的紙條裡！也可以刷新頁面再試一次喵\n";
 	});
 
   </script>
