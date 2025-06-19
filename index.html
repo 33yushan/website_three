@@ -391,11 +391,31 @@
 	document.querySelectorAll('.food').forEach(el => {
 	  if (!el.classList.contains('placeholder')) {
 		el.addEventListener('click', () => {
-		playSound(clickSound);
+		  playSound(clickSound);
 		  selectedFood = el;
 		  const name = el.querySelector('img')?.alt || '（未知）';
 		  const type = el.dataset.type;
 
+		  const slotContents = [...document.querySelectorAll('.slot-content')];
+		  const isFull = slotContents.filter(el => el.dataset.food).length >= 8;
+
+		  const popupContent = document.getElementById("popupContent");
+		  const popupMessage = document.getElementById("popupMessage");
+		  const popupButtons = document.getElementById("popupButtons");
+
+		  if (isFull) {
+			// ➤ 如果滿格，顯示提示 popup，只保留放回按鈕
+			popupContent.style.display = 'none';
+			popupMessage.style.display = 'block';
+			popupButtons.style.display = 'flex';
+			document.getElementById("popupRight").style.display = "none";
+			popupMessage.innerText = "你已經選了 8 種食材囉喵～\n請先把不要的食材放回去再選新的喔！";
+			confirmBtn.style.display = "none";
+			popup.style.display = 'flex';
+			return;
+		  }
+
+		  // ➤ 若沒滿格，正常流程
 		  popupContent.style.display = 'flex';
 		  popupMessage.style.display = 'none';
 		  popupButtons.style.display = 'flex';
@@ -422,7 +442,7 @@
 	  );
 
 	  if (!emptySlot) {
-		alert("已經選滿 8 個食材囉！");
+		alert("已經選滿 8 個食材！");
 		return;
 	  }
 
